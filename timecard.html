@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timecard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="timecard.css">
+
+</head>
+<body>
+    <div class="container">
+        <div>
+            <div class="header">
+              <a href="/"><i class="fas fa-arrow-left"></i></a>
+                <h1>Timecard</h1>
+            </div>
+            <div class="summary">
+                <div class="my-div">
+                    <h2 class="font-size">Total Hours</h2>
+                    <p class="text-size" id="totalHours">-</p>
+                </div>
+                <div class="my-div">
+                    <h2 class="font-size">Overtime</h2>
+                    <p class="text-size" id="overtime">- </p>
+                </div>
+            </div>
+            <div class="gap"></div>
+            <div class="activity">
+                <h2 >Recent Activity</h2>
+                <div  id="activityList"></div>
+            </div>
+        </div>
+        <button class="export-button">Export to PDF</button>
+    </div>
+
+    <script>
+        function updateActivityList() {
+            const data = JSON.parse(localStorage.getItem('check-in-data') || '{}');
+            const activityList = document.getElementById('activityList');
+            activityList.innerHTML = '';
+
+            if (data.checkInTime) {
+                const checkInTime = new Date(data.checkInTime);
+                const checkOutTime = data.checkOutTime ? new Date(data.checkOutTime) : new Date();
+                const workingHours = Math.abs(checkOutTime - checkInTime) / 36e5;
+
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                activityItem.innerHTML = `
+                    <i class="fas fa-calendar-alt"></i>
+                    <div>
+                        <p>Checked in</p>
+                        <p>${checkInTime.toLocaleString()}</p>
+                    </div>
+                `;
+                activityList.appendChild(activityItem);
+
+                if (data.checkOutTime) {
+                    const activityItem = document.createElement('div');
+                    activityItem.className = 'activity-item';
+                    activityItem.innerHTML = `
+                        <i class="fas fa-calendar-alt"></i>
+                        <div>
+                            <p>Checked out</p>
+                            <p>${checkOutTime.toLocaleString()}</p>
+                        </div>
+                    `;
+                    activityList.appendChild(activityItem);
+                }
+            }
+
+            // Add previous check-in/check-out activities
+            if (data.previousCheckIn) {
+                const previousCheckInTime = new Date(data.previousCheckIn);
+                const previousCheckOutTime = data.previousCheckOut ? new Date(data.previousCheckOut) : new Date();
+
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                activityItem.innerHTML = `
+                    <i class="fas fa-calendar-alt"></i>
+                    <div>
+                        <p>Checked in</p>
+                        <p>${previousCheckInTime.toLocaleString()}</p>
+                    </div>
+                `;
+                activityList.appendChild(activityItem);
+
+                if (data.previousCheckOut) {
+                    const activityItem = document.createElement('div');
+                    activityItem.className = 'activity-item';
+                    activityItem.innerHTML = `
+                        <i class="fas fa-calendar-alt"></i>
+                        <div>
+                            <p>Checked out</p>
+                            <p>${previousCheckOutTime.toLocaleString()}</p>
+                        </div>
+                    `;
+                    activityList.appendChild(activityItem);
+                }
+            }
+        }
+
+        function updateSummary() {
+            const data = JSON.parse(localStorage.getItem('check-in-data') || '{}');
+            const totalHoursElement = document.getElementById('totalHours');
+            const overtimeElement = document.getElementById('overtime');
+
+            if (data.checkInTime) {
+                const checkInTime = new Date(data.checkInTime);
+                const checkOutTime = data.checkOutTime ? new Date(data.checkOutTime) : new Date();
+                const workingHours = Math.abs(checkOutTime - checkInTime) / 36e5;
+
+                totalHoursElement.textContent = workingHours.toFixed(2) + 'h';
+                overtimeElement.textContent = (workingHours - 8).toFixed(2) + 'h';
+            } else {
+                totalHoursElement.textContent = '-';
+                overtimeElement.textContent = '-';
+            }
+        }
+
+        updateActivityList();
+        updateSummary();
+    </script>
+</body>
+</html>

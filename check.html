@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geofence Check-In/Out</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        #map { height: 400px; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <button id="checkOutButton" style="display: none;">Check Out</button>
+    <p id="status"></p>
+
+    <script>
+        const map = L.map('map');
+        const checkOutButton = document.getElementById('checkOutButton');
+        const statusElement = document.getElementById('status');
+        let isCheckedIn = false;
+        let isWithinGeofence = false;
+
+        const officeLatitude = 11.2721791;
+        const officeLongitude = 77.6039999;
+        map.setView([officeLatitude, officeLongitude], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const officeMarker = L.marker([officeLatitude, officeLongitude]).addTo(map);
+        officeMarker.bindPopup("Office Location").openPopup();
+
+        const geofenceCircle = L.circle([officeLatitude, officeLongitude], {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.2,
+            radius: 200
+        }).addTo(map);
+
+        let userMarker;
+
+        function updateLocation(position) {
+            const { latitude, longitude } = position.coords;
+            console.log("Current position:", latitude, longitude);
+
+            if (userMarker) {
+                map.removeLayer(userMarker);
+            }
+
+            userMarker = L.marker([latitude, longitude]).addTo(map);
+            userMarker.bindPopup("You are here").openPopup();
+
+            const distance = map.distance([latitude, longitude], [officeLatitude, officeLongitude]);
+            console.log("Distance from office:", distance);
+
+            if (distance <= 500) {
+                if (!isWithinGeofence) {
+                    isWithinGeofence = true;
+                    if (!isCheckedIn) {
+                        checkIn();
+                    }
+                }
+                checkOutButton.style.display = 'block';
+                statusElement.textContent = "You are within the geofence.";
+            } else {
+                isWithinGeofence = false;
+                checkOutButton.style.display = 'none';
+                statusElement.textContent = "You are outside the geofence.";
+                if (isCheckedIn) {
+                    checkOut();
+                }
+            }
+        }
+
+        function handleLocationError(error) {
+            console.error("Error getting location:", error.message);
+            statusElement.textContent = "Error getting location. Please enable geolocation.";
+        }
+
+        navigator.geolocation.watchPosition(updateLocation, handleLocationError);
+
+        checkOutButton.addEventListener('click', function() {
+            const confirmed = confirm("Are you sure you want to check out?");
+            if (confirmed) {
+                checkOut();
+            }
+        });
+
+        function checkIn() {
+            const currentTime = new Date().toLocaleString();
+            isCheckedIn = true;
+            checkOutButton.style.display = 'block';
+            statusElement.textContent = `Checked in at ${currentTime}`;
+            console.log("Checked in at:", currentTime);
+            alert(` Checked in at ${currentTime}`);
+        }
+
+        function checkOut() {
+            const currentTime = new Date().toLocaleString();
+            isCheckedIn = false;
+            checkOutButton.style.display = 'none';
+            statusElement.textContent = `Checked out at ${currentTime}`;
+            console.log("Checked out at:", currentTime);
+            alert(`Checked out at ${currentTime}`);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Attendance
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+ </head>
+ <body class="bg-gray-100">
+  <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+   <div class="p-4 border-b">
+    <div class="flex justify-between items-center">
+     <h1 class="text-lg font-semibold">
+      Attendance
+     </h1>
+     <i class="fas fa-search text-gray-500">
+     </i>
+    </div>
+   </div>
+   <div class="p-4 text-center">
+    <h2 class="text-xl font-semibold">
+     Check in to your office
+    </h2>
+    <p class="text-gray-600 mt-2">
+     We'll record your check-in time based on your location. You need to be within 200 meters of the office.
+    </p>
+   </div>
+   <div class="p-4">
+    <div class="relative mb-4">
+     <input class="w-full p-3 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search" type="text"/>
+     <i class="fas fa-search absolute left-3 top-3 text-gray-500">
+     </i>
+    </div>
+    <div class="relative mb-4">
+     <img alt="Map showing San Francisco" class="w-full rounded-lg" height="300" src="https://storage.googleapis.com/a1aa/image/RLcDf56kRCQCCyRB2cGrCLm5EGh6j0vGQ4seEdUbZnPoWrnTA.jpg" width="400"/>
+     <div class="absolute top-2 right-2 flex flex-col space-y-2">
+      <button class="bg-white p-2 rounded-full shadow-md">
+       <i class="fas fa-plus text-gray-700">
+       </i>
+      </button>
+      <button class="bg-white p-2 rounded-full shadow-md">
+       <i class="fas fa-minus text-gray-700">
+       </i>
+      </button>
+      <button class="bg-white p-2 rounded-full shadow-md">
+       <i class="fas fa-location-arrow text-gray-700">
+       </i>
+      </button>
+     </div>
+    </div>
+    <div class="flex items-center mb-4">
+     <i class="fas fa-map-marker-alt text-blue-500 text-xl">
+     </i>
+     <div class="ml-2">
+      <p class="text-gray-700 font-semibold">
+       Location
+      </p>
+      <p class="text-gray-500">
+       123 Main St, San Francisco, CA
+      </p>
+     </div>
+    </div>
+    <button class="w-full bg-blue-500 text-white p-3 rounded-lg font-semibold">
+     Check In
+    </button>
+   </div>
+  </div>
+ </body>
+</html>
